@@ -74,27 +74,30 @@ class App extends React.Component {
       this.setState(newState)
       return
     }
+    
 
     const startTaskIds = Array.from(start.taskIds)
-    startTaskIds.splice(source.index, 1)
+    startTaskIds.splice(source.index, 1) // draggableなタスクを元の配列から削除
     const newStart = {
-      ...start,
-      taskIds: startTaskIds,
+      ...start, // 元のタスクたちをコピー
+      taskIds: startTaskIds,  // もとのタスクのtaskIdsを、draggableなタスクを削除した配列に置き換える
     }
 
-    const finishTaskIds = Array.from(finish.taskIds)
-    finishTaskIds.splice(destination.index, 0, draggableId)
+    const finishTaskIds = Array.from(finish.taskIds) // droppableのtaskIdsを登録
+    finishTaskIds.splice(destination.index, 0, draggableId) // 置いた場所のindexにdraggableなタスクを追加
     const newFinish = {
-      ...finish,
-      taskIds: finishTaskIds,
+      ...finish, // 置いた先のdroppableをコピー
+      taskIds: finishTaskIds, // 置いた先droppableIdsを、draggableなタスクを追加した配列に置き換える
     }
+
+    console.log(newStart.id)
     
     const newState = {
-      ...this.state,
-      columns: {
-        ...this.state.columns,
-        [newStart.id]: newStart,
-        [newFinish.id]: newFinish,
+      ...this.state, // stateのコピー
+      columns: { // columnsを変更する
+        ...this.state.columns, // columnsのコピー
+        [newStart.id]: newStart, // dragを開始したcolumnIdに、新しい配列（タスクを削除した配列）を当てる
+        [newFinish.id]: newFinish, // dragをしたcolumnIdに、新しい配列(タスクを追加した配列)を当てる
       }
     }
     this.setState(newState)
