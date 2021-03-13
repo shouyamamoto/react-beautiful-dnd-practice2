@@ -28,9 +28,6 @@ class App extends React.Component {
      * }
      */
     const { destination, source, draggableId } = result
-    console.log(result)
-    console.log(destination)
-    
     // 置いた先がなければ何もせずに処理を終了させる
     if(!destination) {
       return
