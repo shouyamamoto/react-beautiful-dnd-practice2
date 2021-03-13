@@ -4,25 +4,15 @@ import '@atlaskit/css-reset'
 import { DragDropContext } from 'react-beautiful-dnd'
 import initialData from './initial-data'
 import Column from './column'
+import styled from 'styled-components';
+
+const Container = styled.div`
+    display: flex;
+`
 
 class App extends React.Component {
   state = initialData
-
-  // onDragStart = () => {
-  //   document.body.style.color = 'orange'
-  // }
-
-  // onDragUpdate = update => {
-  //   const { destination } = update
-  //   const opacity = destination
-  //     ? destination.index / Object.keys(this.state.tasks).length
-  //     : 0
-  //   document.body.style.backgroundColor = `rgba(153, 141, 217, ${opacity})`
-  // }
-
   onDragEnd = result => {
-    // document.body.style.color = 'inherit'
-    // document.body.style.backgroundColor = 'inherit'
     // destinationは置いた先、sourceは元の場所、draggableIdには持っているタスクのidが入っている
     /**
      * resultの例
@@ -56,44 +46,75 @@ class App extends React.Component {
       return
     }
 
-    const column = this.state.columns[source.droppableId]
-    const newTaskIds = Array.from(column.taskIds)
-    newTaskIds.splice(source.index, 1) // 持っている元のインデックスから1つ配列から削除する
-    newTaskIds.splice(destination.index, 0, draggableId) // 置いた先のインデックスに持っている元のidを追加する
-    // deleteCountが0の場合には何も削除されないが、少なくとも1つ以上itemを追加する必要がある
-
-    // columnオブジェクトのコピーの後、プロパティを追加して新しいオブジェクトを作る
-    const newColumn = {
-      ...column, // コピー　いったんここでコピーするのがキモ
-      taskIds: newTaskIds // 追加するプロパティ(taskIdsはもともとあるプロパティなので、このプロパティに上書きされる)
+    const start = this.state.columns[source.droppableId]
+    const finish = this.state.columns[destination.droppableId]
+    
+    // startしたcolumnとfinishしたcolumnが同じ場合にはこの処理を続ける
+    if( start === finish ) {
+      const newTaskIds = Array.from(start.taskIds)
+      newTaskIds.splice(source.index, 1) // 持っている元のインデックスから1つ配列から削除する
+      newTaskIds.splice(destination.index, 0, draggableId) // 置いた先のインデックスに持っている元のidを追加する
+      // deleteCountが0の場合には何も削除されないが、少なくとも1つ以上itemを追加する必要がある
+  
+      // columnオブジェクトのコピーの後、プロパティを追加して新しいオブジェクトを作る
+      const newColumn = {
+        ...start, // コピー　いったんここでコピーするのがキモ
+        taskIds: newTaskIds // 追加するプロパティ(taskIdsはもともとあるプロパティなので、このプロパティに上書きされる)
+      }
+  
+      const newState = {
+        ...this.state, // stateのコピー　キモ
+        columns: { // もともとのcolumnsを以下に変更する
+          ...this.state.columns,  
+          [newColumn.id]: newColumn,
+        }
+      }
+      
+      // stateを変更する
+      this.setState(newState)
+      return
     }
 
-    const newState = {
-      ...this.state, // stateのコピー　キモ
-      columns: { // もともとのcolumnsを以下に変更する
-        ...this.state.columns,  
-        [newColumn.id]: newColumn,
-      }
+    const startTaskIds = Array.from(start.taskIds)
+    startTaskIds.splice(source.index, 1)
+    const newStart = {
+      ...start,
+      taskIds: startTaskIds,
+    }
+
+    const finishTaskIds = Array.from(finish.taskIds)
+    finishTaskIds.splice(destination.index, 0, draggableId)
+    const newFinish = {
+      ...finish,
+      taskIds: finishTaskIds,
     }
     
-    // stateを変更する
+    const newState = {
+      ...this.state,
+      columns: {
+        ...this.state.columns,
+        [newStart.id]: newStart,
+        [newFinish.id]: newFinish,
+      }
+    }
     this.setState(newState)
   }
 
   render() {
     return (
       <DragDropContext 
-        onDragStart={this.onDragStart}
-        onDragUpdate={this.onDragUpdate}
         onDragEnd={this.onDragEnd}
       >
+        <Container>
         {this.state.columnOrder.map((columnId) => {
           const column = this.state.columns[columnId]
           const tasks = column.taskIds.map(taskId => this.state.tasks[taskId])
 
           return <Column key={column.id} column={column} tasks={tasks} /> 
         })}
+        </Container>
       </DragDropContext>
+      
     )
   }
 }
