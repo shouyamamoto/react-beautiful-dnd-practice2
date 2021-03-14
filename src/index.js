@@ -89,8 +89,6 @@ class App extends React.Component {
       ...finish, // 置いた先のdroppableをコピー
       taskIds: finishTaskIds, // 置いた先droppableIdsを、draggableなタスクを追加した配列に置き換える
     }
-
-    console.log(newStart.id)
     
     const newState = {
       ...this.state, // stateのコピー
