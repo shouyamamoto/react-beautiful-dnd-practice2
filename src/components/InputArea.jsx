@@ -15,6 +15,11 @@ const InputFrom = styled.input`
   font-size: 16px;
   background-color: white;
   flex-basis: 70%;
+  transition: border 0.2s ease;
+
+  &:focus {
+    border: 1px solid skyblue;
+  }
 `
 
 const Button = styled.button`
@@ -33,10 +38,11 @@ const Button = styled.button`
 ` 
 
 export const InputArea = (props) => {
+  const { inputTodo, onChange, onClick, onEnter } = props
   return (
     <InputWrap>
-      <InputFrom placeholder="TODOを入力"/>
-      <Button>追加</Button>
+      <InputFrom type="text" placeholder="TODOを入力" value={inputTodo} onChange={onChange} onKeyDown={onEnter}/>
+      <Button onClick={onClick}>追加</Button>
     </InputWrap>
   )
 }

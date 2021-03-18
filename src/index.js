@@ -16,7 +16,50 @@ const AppContainer = styled.div`
   margin: 0 auto;
 `
 const App = () => {
+  const tasks = initialData.columns['column-1'].taskIds.length
+
+  const [countId, setCountId] = useState(tasks)
   const [initData, setInitData] = useState(initialData)
+  const [inputTodo, setInputTodo] = useState('') 
+
+  const onInputChange = (e) => {setInputTodo(e.target.value)}
+
+  const onBtnClick = () => {
+    const newTaskId = countId + 1
+    const newTaskIds = [...initData.columns['column-1'].taskIds]
+    newTaskIds.push(`task${newTaskId}`)
+    
+    const newTodoColumn = {
+      ...initData.columns['column-1'],
+      taskIds: newTaskIds
+    }
+    
+    const newColumns = {
+      ...initData.columns,
+      'column-1': newTodoColumn
+    }
+
+    const newTasks = {...initData.tasks}
+    const taskKey = `task${newTaskId}`
+    newTasks[taskKey] = {id: `task${newTaskId}`, content: inputTodo}
+
+    const newState = {
+      ...initData,
+      tasks: newTasks,
+      columns: newColumns
+    }
+
+    setInitData(newState)
+    setInputTodo('')
+    setCountId(newTaskId)
+  }
+
+  const onKeyDown = (e) => {
+    if(e.keyCode === 13) {
+      onBtnClick()
+    }
+  }
+
   const onDragEnd = result => {
     const { destination, source, draggableId } = result
 
@@ -85,7 +128,7 @@ const App = () => {
 
   return (
     <AppContainer>
-      <InputArea />
+      <InputArea inputTodo={inputTodo} onChange={onInputChange} onClick={onBtnClick} onEnter={onKeyDown}/>
       <DragDropContext 
         onDragEnd={onDragEnd}
       >
