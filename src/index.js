@@ -25,6 +25,9 @@ const App = () => {
   const onInputChange = (e) => {setInputTodo(e.target.value)}
 
   const onBtnClick = () => {
+    if(!inputTodo) {
+      return
+    }
     const newTaskId = countId + 1
     const newTaskIds = [...initData.columns['column-1'].taskIds]
     newTaskIds.push(`task${newTaskId}`)

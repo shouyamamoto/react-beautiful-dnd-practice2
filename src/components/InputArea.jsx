@@ -30,10 +30,11 @@ const Button = styled.button`
   flex-basis: 20%;
   margin: 8px;
   outline: none;
-  transition: background-color .3s ease;
+  transition: background-color .3s ease, color .3s ease;
 
   &:hover {
     background-color: skyblue;
+    color: white;
   }
 ` 
 

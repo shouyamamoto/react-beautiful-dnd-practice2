@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Draggable } from 'react-beautiful-dnd'
+import trashIcon from '../images/trash-icon.png'
 
 const Container = styled.li`
   border: 1px solid lightgray;
@@ -10,6 +11,7 @@ const Container = styled.li`
   list-style: none;
   display: flex;
   background-color: ${props => (props.isDragging ? 'lightgreen' : 'white')};
+  transition: all 0.3s;
 `
 
 export const Task = (props) => {
@@ -25,6 +27,7 @@ export const Task = (props) => {
           isDragging={snapshot.isDragging}
         >
         {task.content}
+        <img src="{trashIcon}" alt="" />
         </Container>
       )}
       </Draggable>
