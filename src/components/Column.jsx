@@ -6,7 +6,7 @@ import { Task } from './Task'
 const Container = styled.div`
   margin: 8px;
   border: 1px solid lightgray;
-  border-radius: 2px;
+  border-radius: 8px 8px 0 0;
   width: 220px;
 
   display: flex;
@@ -25,7 +25,7 @@ const TaskList = styled.ul`
 `
 
 export const Column = (props) => {
-  const { column, tasks } = props
+  const { column, tasks, onClickDelete } = props
   return (
     <Container>
     <Title>{column.title}</Title>
@@ -39,7 +39,7 @@ export const Column = (props) => {
         {...provided.droppableProps}
         isDraggingOver={snapshot.isDraggingOver}
       >
-        {tasks.map((task, index) => <Task key={task.id} task={task} index={index}/>)}
+        {tasks.map((task, index) => <Task key={task.id} task={task} onClickDelete={onClickDelete} index={index}/>)}
         {provided.placeholder}
       </TaskList>
     )}

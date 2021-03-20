@@ -10,7 +10,7 @@ const InputFrom = styled.input`
   margin: 8px;
   display: block;
   border-radius: 8px;
-  border: 1px solid #f1f1f1;
+  border: 1px solid lightgray;
   outline: none;
   font-size: 16px;
   background-color: white;

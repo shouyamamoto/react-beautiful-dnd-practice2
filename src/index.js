@@ -5,7 +5,7 @@ import { DragDropContext } from 'react-beautiful-dnd'
 import initialData from './initial-data'
 import { InputArea } from './components/InputArea'
 import { Column } from './components/Column'
-import styled from 'styled-components';
+import styled from 'styled-components'
 
 const Container = styled.div`
   display: flex;
@@ -20,7 +20,7 @@ const App = () => {
 
   const [countId, setCountId] = useState(tasks)
   const [initData, setInitData] = useState(initialData)
-  const [inputTodo, setInputTodo] = useState('') 
+  const [inputTodo, setInputTodo] = useState('')
 
   const onInputChange = (e) => {setInputTodo(e.target.value)}
 
@@ -63,6 +63,15 @@ const App = () => {
     }
   }
 
+  const onClickDelete = (index, taskId) => {
+    // const newColumns = {...initData.columns}
+
+    // Object.keys(newColumns).forEach(column => {
+    //   const deleteTarget = newColumns[column].taskIds.find(task => task === taskId)
+    //   console.log(deleteTarget)
+    // })
+  }
+
   const onDragEnd = result => {
     const { destination, source, draggableId } = result
 
@@ -87,12 +96,12 @@ const App = () => {
   
       // columnオブジェクトのコピーの後、プロパティを追加して新しいオブジェクトを作る
       const newColumn = {
-        ...start, // コピー　いったんここでコピーするのがキモ
+        ...start, // コピー いったんここでコピーするのがキモ
         taskIds: newTaskIds // 追加するプロパティ(taskIdsはもともとあるプロパティなので、このプロパティに上書きされる)
       }
   
       const newState = {
-        ...initData, // stateのコピー　キモ
+        ...initData, // stateのコピー キモ
         columns: { // もともとのcolumnsを以下に変更する
           ...initData.columns,  
           [newColumn.id]: newColumn,
@@ -140,7 +149,14 @@ const App = () => {
           const column = initData.columns[columnId]
           const tasks = column.taskIds.map(taskId => initData.tasks[taskId])
 
-          return <Column key={column.id} column={column} tasks={tasks} /> 
+          return (
+            <Column 
+              key={column.id} 
+              column={column} 
+              tasks={tasks} 
+              onClickDelete={onClickDelete}
+            /> 
+          )
         })}
         </Container>
       </DragDropContext>
