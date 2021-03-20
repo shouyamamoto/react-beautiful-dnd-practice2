@@ -10,7 +10,7 @@ const InputFrom = styled.input`
   margin: 8px;
   display: block;
   border-radius: 8px;
-  border: 1px solid #f1f1f1;
+  border: 1px solid lightgray;
   outline: none;
   font-size: 16px;
   background-color: white;
@@ -30,15 +30,15 @@ const Button = styled.button`
   flex-basis: 20%;
   margin: 8px;
   outline: none;
-  transition: background-color .3s ease;
+  transition: background-color .3s ease, color .3s ease;
 
   &:hover {
     background-color: skyblue;
+    color: white;
   }
 ` 
 
-export const InputArea = (props) => {
-  const { inputTodo, onChange, onClick, onEnter } = props
+export const InputArea = ({ inputTodo, onChange, onClick, onEnter }) => {
   return (
     <InputWrap>
       <InputFrom type="text" placeholder="TODOを入力" value={inputTodo} onChange={onChange} onKeyDown={onEnter}/>
