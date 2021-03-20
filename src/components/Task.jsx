@@ -45,8 +45,7 @@ const FixBtn = styled.img`
   }
 `
 
-export const Task = (props) => {
-  const { index, task, onClickDelete } = props
+export const Task = ({ index, task, onClickDelete }) => {
   return (
     <Draggable 
       draggableId={task.id} index={index}>

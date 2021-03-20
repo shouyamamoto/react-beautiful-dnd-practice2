@@ -24,8 +24,7 @@ const TaskList = styled.ul`
   min-height: 100px;
 `
 
-export const Column = (props) => {
-  const { column, tasks, onClickDelete } = props
+export const Column = ({ column, tasks, onClickDelete }) => {
   return (
     <Container>
     <Title>{column.title}</Title>
@@ -39,8 +38,8 @@ export const Column = (props) => {
         {...provided.droppableProps}
         isDraggingOver={snapshot.isDraggingOver}
       >
-        {tasks.map((task, index) => <Task key={task.id} task={task} onClickDelete={onClickDelete} index={index}/>)}
-        {provided.placeholder}
+      {tasks.map((task, index) => <Task key={task.id} task={task} onClickDelete={onClickDelete} index={index}/>)}
+      {provided.placeholder}
       </TaskList>
     )}
     </Droppable>

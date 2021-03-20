@@ -38,8 +38,7 @@ const Button = styled.button`
   }
 ` 
 
-export const InputArea = (props) => {
-  const { inputTodo, onChange, onClick, onEnter } = props
+export const InputArea = ({ inputTodo, onChange, onClick, onEnter }) => {
   return (
     <InputWrap>
       <InputFrom type="text" placeholder="TODOを入力" value={inputTodo} onChange={onChange} onKeyDown={onEnter}/>
