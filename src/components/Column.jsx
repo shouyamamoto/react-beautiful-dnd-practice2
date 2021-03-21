@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import styled from 'styled-components'
 import { Droppable } from 'react-beautiful-dnd'
 import { Task } from './Task'
@@ -24,7 +24,8 @@ const TaskList = styled.ul`
   min-height: 100px;
 `
 
-export const Column = ({ column, tasks, onClickDelete }) => {
+export const Column = memo(({ column, tasks, onClickDelete }) => {
+  console.log('columnが再度レンダリングされた')
   return (
     <Container>
     <Title>{column.title}</Title>
@@ -46,4 +47,4 @@ export const Column = ({ column, tasks, onClickDelete }) => {
 
     </Container>
   )
-}
+})

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import styled from 'styled-components'
 import { Draggable } from 'react-beautiful-dnd'
 import trashIcon from '../images/trash.svg'
@@ -45,7 +45,8 @@ const FixBtn = styled.img`
   }
 `
 
-export const Task = ({ index, task, onClickDelete }) => {
+export const Task = memo(({ index, task, onClickDelete }) => {
+  console.log('taskが再度レンダリングされた')
   return (
     <Draggable 
       draggableId={task.id} index={index}>
@@ -63,4 +64,4 @@ export const Task = ({ index, task, onClickDelete }) => {
       )}
       </Draggable>
   )
-}
+})

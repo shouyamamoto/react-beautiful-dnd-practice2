@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import styled from 'styled-components'
 
 const InputWrap = styled.div`
@@ -38,11 +38,12 @@ const Button = styled.button`
   }
 ` 
 
-export const InputArea = ({ inputTodo, onChange, onClick, onEnter }) => {
+export const InputArea = memo(({ inputTodo, onChange, onClick, onEnter }) => {
+  console.log('inputareaが際レンダリングされた')
   return (
     <InputWrap>
       <InputFrom type="text" placeholder="TODOを入力" value={inputTodo} onChange={onChange} onKeyDown={onEnter}/>
       <Button onClick={onClick}>追加</Button>
     </InputWrap>
   )
-}
+})

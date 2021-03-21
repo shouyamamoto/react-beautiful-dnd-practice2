@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import '@atlaskit/css-reset'
 import { DragDropContext } from 'react-beautiful-dnd'
 import initialData from '../initial-data'
@@ -21,7 +21,8 @@ export const App = () => {
   const [initData, setInitData] = useState(initialData)
   const [inputTodo, setInputTodo] = useState('')
 
-  const onInputChange = (e) => {setInputTodo(e.target.value)}
+  // useCallbackを使えば、
+  const onInputChange = useCallback((e) => {setInputTodo(e.target.value)}, [])
 
   const onBtnClick = () => {
     if(!inputTodo) {
@@ -84,7 +85,7 @@ export const App = () => {
 
     setInitData(newState)
   }
-
+  
   const onDragEnd = result => {
     const { destination, source, draggableId } = result
 
