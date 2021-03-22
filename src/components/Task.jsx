@@ -62,6 +62,6 @@ export const Task = memo(({ index, task, onClickDelete }) => {
         <DeleteBtn src={trashIcon} onClick={() => onClickDelete(index, task.id)}></DeleteBtn>
         </Container>
       )}
-      </Draggable>
+    </Draggable>
   )
 })

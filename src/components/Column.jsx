@@ -28,23 +28,24 @@ export const Column = memo(({ column, tasks, onClickDelete }) => {
   console.log('columnが再度レンダリングされた')
   return (
     <Container>
-    <Title>{column.title}</Title>
+      <Title>{column.title}</Title>
 
-    <Droppable 
-      droppableId={column.id} 
-    >
-    {(provided, snapshot) => (
-      <TaskList
-        ref={provided.innerRef}
-        {...provided.droppableProps}
-        isDraggingOver={snapshot.isDraggingOver}
+      <Droppable 
+        droppableId={column.id} 
       >
-      {tasks.map((task, index) => <Task key={task.id} task={task} onClickDelete={onClickDelete} index={index}/>)}
-      {provided.placeholder}
-      </TaskList>
-    )}
-    </Droppable>
-
+      {(provided, snapshot) => (
+        <TaskList
+          ref={provided.innerRef}
+          {...provided.droppableProps}
+          isDraggingOver={snapshot.isDraggingOver}
+        >
+        {tasks.map((task, index) => 
+          <Task key={task.id} task={task} index={index} onClickDelete={onClickDelete}/>
+        )}
+        {provided.placeholder}
+        </TaskList>
+      )}
+      </Droppable>
     </Container>
   )
 })

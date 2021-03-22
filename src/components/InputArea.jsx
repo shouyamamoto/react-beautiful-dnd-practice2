@@ -42,7 +42,13 @@ export const InputArea = memo(({ inputTodo, onChange, onClick, onEnter }) => {
   console.log('inputareaが際レンダリングされた')
   return (
     <InputWrap>
-      <InputFrom type="text" placeholder="TODOを入力" value={inputTodo} onChange={onChange} onKeyDown={onEnter}/>
+      <InputFrom 
+        type="text" 
+        placeholder="TODOを入力" 
+        value={inputTodo} 
+        onChange={onChange} 
+        onKeyDown={onEnter}
+      />
       <Button onClick={onClick}>追加</Button>
     </InputWrap>
   )

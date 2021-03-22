@@ -1,10 +1,15 @@
+// React
 import React, { useCallback, useState } from 'react'
+// css関連
 import '@atlaskit/css-reset'
+import styled from 'styled-components'
+// react-beautiful-dnd
 import { DragDropContext } from 'react-beautiful-dnd'
+// stateとして持つオブジェクト
 import initialData from '../initial-data'
+// コンポーネント
 import { InputArea } from './InputArea'
 import { Column } from './Column'
-import styled from 'styled-components'
 
 const Container = styled.div`
   display: flex;
@@ -14,6 +19,7 @@ const AppContainer = styled.div`
   width: 50%;
   margin: 0 auto;
 `
+
 export const App = () => {
   const tasks = initialData.columns['column-1'].taskIds.length
 
@@ -21,7 +27,7 @@ export const App = () => {
   const [initData, setInitData] = useState(initialData)
   const [inputTodo, setInputTodo] = useState('')
 
-  // useCallbackを使えば、
+  // useCallbackを使えば、関数のメモ化ができる
   const onInputChange = useCallback((e) => {setInputTodo(e.target.value)}, [])
 
   const onBtnClick = () => {
@@ -85,7 +91,7 @@ export const App = () => {
 
     setInitData(newState)
   }
-  
+
   const onDragEnd = result => {
     const { destination, source, draggableId } = result
 
@@ -154,15 +160,20 @@ export const App = () => {
 
   return (
     <AppContainer>
-      <InputArea inputTodo={inputTodo} onChange={onInputChange} onClick={onBtnClick} onEnter={onKeyDown}/>
-      <DragDropContext 
-        onDragEnd={onDragEnd}
-      >
+      <InputArea 
+        inputTodo={inputTodo} 
+        onChange={onInputChange} 
+        onClick={onBtnClick} 
+        onEnter={onKeyDown}
+      />
+      <DragDropContext onDragEnd={onDragEnd}>
         <Container>
         {initData.columnOrder.map((columnId) => {
           const column = initData.columns[columnId]
-          const tasks = column.taskIds.map(taskId => initData.tasks[taskId])
-
+          const tasks = column.taskIds.map(
+            taskId => initData.tasks[taskId]
+          )
+          
           return (
             <Column 
               key={column.id} 
