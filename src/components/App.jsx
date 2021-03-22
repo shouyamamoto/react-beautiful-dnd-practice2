@@ -10,13 +10,14 @@ import initialData from '../initial-data'
 // コンポーネント
 import { InputArea } from './InputArea'
 import { Column } from './Column'
+import { Modal } from './Modal'
 
 const Container = styled.div`
   display: flex;
   justify-content: space-between;
 `
 const AppContainer = styled.div`
-  width: 50%;
+  width: 100%;
   margin: 0 auto;
 `
 
@@ -26,6 +27,7 @@ export const App = () => {
   const [countId, setCountId] = useState(tasks)
   const [initData, setInitData] = useState(initialData)
   const [inputTodo, setInputTodo] = useState('')
+  const [open, setOpen] = useState(false)
 
   // useCallbackを使えば、関数のメモ化ができる
   const onInputChange = useCallback((e) => {setInputTodo(e.target.value)}, [])
@@ -67,6 +69,14 @@ export const App = () => {
     if(e.keyCode === 13) {
       onBtnClick()
     }
+  }
+
+  const onClickFix = () => {
+    setOpen(!open)
+  }
+
+  const onClickClose = () => {
+    setOpen(false)
   }
 
   const onClickDelete = (index, taskId) => {
@@ -180,11 +190,13 @@ export const App = () => {
               column={column} 
               tasks={tasks} 
               onClickDelete={onClickDelete}
+              onClickFix={onClickFix}
             /> 
           )
         })}
         </Container>
       </DragDropContext>
+      <Modal open={open} onClickClose={onClickClose}/>
     </AppContainer>
   )
 }

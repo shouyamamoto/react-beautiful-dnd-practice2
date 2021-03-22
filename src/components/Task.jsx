@@ -5,14 +5,14 @@ import trashIcon from '../images/trash.svg'
 import fixIcon from '../images/fix.svg'
 
 const Container = styled.li`
-  border: 1px solid lightgray;
-  border-radius: 8px 8px 0 0;
-  padding: 8px;
+  border-radius: 2px;
+  padding: 8px 8px 8px 16px;
   margin-bottom: 8px;
   list-style: none;
   display: flex;
   justify-content: space-between;
-  background-color: ${props => (props.isDragging ? 'lightgreen' : 'white')};
+  background-color: ${props => (props.isDragging ? '#b76f0e' : 'white')};
+  color: ${props => (props.isDragging ? 'white' : '#333')};
   transition: all 0.3s;
 `
 const TaskText = styled.p`
@@ -45,8 +45,7 @@ const FixBtn = styled.img`
   }
 `
 
-export const Task = memo(({ index, task, onClickDelete }) => {
-  console.log('taskが再度レンダリングされた')
+export const Task = memo(({ index, task, onClickDelete, onClickFix }) => {
   return (
     <Draggable 
       draggableId={task.id} index={index}>
@@ -58,7 +57,7 @@ export const Task = memo(({ index, task, onClickDelete }) => {
           isDragging={snapshot.isDragging}
         >
         <TaskText>{task.content}</TaskText>
-        <FixBtn src={fixIcon}></FixBtn>
+        <FixBtn src={fixIcon} onClick={() => onClickFix()}></FixBtn>
         <DeleteBtn src={trashIcon} onClick={() => onClickDelete(index, task.id)}></DeleteBtn>
         </Container>
       )}

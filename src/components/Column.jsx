@@ -5,27 +5,30 @@ import { Task } from './Task'
 
 const Container = styled.div`
   margin: 8px;
-  border: 1px solid lightgray;
-  border-radius: 8px 8px 0 0;
-  width: 220px;
+  border-radius: 2px;
+  width: 300px;
+  background-color: #1d160b;
 
   display: flex;
   flex-direction: column;
 `
 const Title = styled.h3`
   padding: 8px;
+  color: #fff;
+  text-align: center;
+  padding: 20px;
 `
 const TaskList = styled.ul`
   list-style: none;
-  padding: 8px;
+  padding: 10px;
   transition: background-color 0.3s ease;
-  background-color: ${props => (props.isDraggingOver) ? 'skyblue' : 'white'};
+  background-color: ${props => (props.isDraggingOver) ? '#efe2cf' : '#1d160b'};
   flex-grow: 1;
-  min-height: 100px;
+  min-height: 300px;
+  margin: 0;
 `
 
-export const Column = memo(({ column, tasks, onClickDelete }) => {
-  console.log('columnが再度レンダリングされた')
+export const Column = memo(({ column, tasks, onClickDelete, onClickFix }) => {
   return (
     <Container>
       <Title>{column.title}</Title>
@@ -40,7 +43,7 @@ export const Column = memo(({ column, tasks, onClickDelete }) => {
           isDraggingOver={snapshot.isDraggingOver}
         >
         {tasks.map((task, index) => 
-          <Task key={task.id} task={task} index={index} onClickDelete={onClickDelete}/>
+          <Task key={task.id} task={task} index={index} onClickDelete={onClickDelete} onClickFix={onClickFix}/>
         )}
         {provided.placeholder}
         </TaskList>
