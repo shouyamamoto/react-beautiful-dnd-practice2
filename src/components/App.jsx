@@ -10,7 +10,6 @@ import initialData from '../initial-data'
 // コンポーネント
 import { InputArea } from './InputArea'
 import { Column } from './Column'
-import { Modal } from './Modal'
 
 const Container = styled.div`
   display: flex;
@@ -24,14 +23,17 @@ const AppContainer = styled.div`
 export const App = () => {
   const tasks = initialData.columns['column-1'].taskIds.length
 
-  const [countId, setCountId] = useState(tasks)
-  const [initData, setInitData] = useState(initialData)
+  const [countId, setCountId] = useState(tasks) // idの値
+  const [initData, setInitData] = useState(initialData) // タスクの初期化
   const [inputTodo, setInputTodo] = useState('')
-  const [open, setOpen] = useState(false)
 
   // useCallbackを使えば、関数のメモ化ができる
-  const onInputChange = useCallback((e) => {setInputTodo(e.target.value)}, [])
-
+  // 入力中のレンダリング処理
+  const onInputChange = useCallback((e) => {
+    setInputTodo(e.target.value)}, []
+  )
+  
+  // 追加ボタンを押した時の処理
   const onBtnClick = () => {
     if(!inputTodo) {
       return
@@ -64,21 +66,16 @@ export const App = () => {
     setInputTodo('')
     setCountId(newTaskId)
   }
-
+  
+  // エンターキーを押したときの処理
   const onKeyDown = (e) => {
     if(e.keyCode === 13) {
       onBtnClick()
     }
   }
-
-  const onClickFix = () => {
-    setOpen(!open)
-  }
-
-  const onClickClose = () => {
-    setOpen(false)
-  }
-
+  
+  
+  // 削除ボタンを押した時の処理
   const onClickDelete = (index, taskId) => {
     const newColumns = {...initData.columns} // columnsをコピー
     const newTasks = {...initData.tasks} // tasksをコピー
@@ -101,7 +98,8 @@ export const App = () => {
 
     setInitData(newState)
   }
-
+  
+  // タスクを移動した時の処理
   const onDragEnd = result => {
     const { destination, source, draggableId } = result
 
@@ -190,13 +188,11 @@ export const App = () => {
               column={column} 
               tasks={tasks} 
               onClickDelete={onClickDelete}
-              onClickFix={onClickFix}
             /> 
           )
         })}
         </Container>
       </DragDropContext>
-      <Modal open={open} onClickClose={onClickClose}/>
     </AppContainer>
   )
 }
