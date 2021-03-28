@@ -46,7 +46,7 @@ const FixBtn = styled.img`
   }
 `
 
-export const Task = memo(({ index, task, onClickDelete }) => {
+export const Task = memo(({ index, task, onClickDelete, onClickTodoFix }) => {
   const [open, setOpen] = useState(false) // モーダルの開閉
 
   // 閉じるボタンを押した時の処理
@@ -76,7 +76,7 @@ export const Task = memo(({ index, task, onClickDelete }) => {
       )}
     </Draggable>
 
-    <Modal open={open} onClickClose={onClickClose} task={task.content}/>
+    <Modal open={open} onClickClose={onClickClose} task={task.content} id={task.id} onClickTodoFix={onClickTodoFix}/>
     </React.Fragment>
   )
 })

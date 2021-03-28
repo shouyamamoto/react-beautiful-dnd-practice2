@@ -27,7 +27,6 @@ export const App = () => {
   const [initData, setInitData] = useState(initialData) // タスクの初期化
   const [inputTodo, setInputTodo] = useState('')
 
-  // useCallbackを使えば、関数のメモ化ができる
   // 入力中のレンダリング処理
   const onInputChange = useCallback((e) => {
     setInputTodo(e.target.value)}, []
@@ -73,7 +72,14 @@ export const App = () => {
       onBtnClick()
     }
   }
-  
+
+  // モーダル内の修正するボタンを押した時の処理
+  const onClickTodoFix = (id, fixTodo) => {
+    const newInitData = {...initData}
+    newInitData.tasks[id].content = fixTodo
+
+    setInitData(newInitData)
+  }
   
   // 削除ボタンを押した時の処理
   const onClickDelete = (index, taskId) => {
@@ -188,6 +194,7 @@ export const App = () => {
               column={column} 
               tasks={tasks} 
               onClickDelete={onClickDelete}
+              onClickTodoFix={onClickTodoFix}
             /> 
           )
         })}
