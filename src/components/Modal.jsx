@@ -1,33 +1,62 @@
-import React, { memo } from 'react'
+import React, { memo, useState } from 'react'
 import styled from 'styled-components'
 
-import { InputArea } from './InputArea'
+const ModalMask = styled.div`
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+`
 
 const ModalWindow = styled.div`
   width: 70vw;
-  height: 70vh;
-  background-color: black;
+  max-width: 400px;
+  height: 30vh;
+  background-color: #efe2cf;
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1;
-  opacity: 0.94;
   border-radius: 2px;
   padding: 60px;
 `
 
 const ModalTitle = styled.p`
-  color: white;
+  color: #2e281f;
   text-align: center;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
+`
+
+const InputArea = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+`
+
+const InputFrom = styled.input`
+  padding: 20px;
+  border-radius: 2px;
+  border: 1px solid lightgray;
+  outline: none;
+  font-size: 16px;
+  background-color: white;
+  transition: border 0.2s ease;
+
+  &:focus {
+    border: 1px solid #b76f0e;
+  }
 `
 
 const CloseBtn = styled.div`
   position: absolute;
-  top: 3%;
-  right: 2%;
+  top: 8%;
+  right: 5%;
   padding: 10px 15px;
   display: inline-block;
   background-color: #efe2cf;
@@ -41,13 +70,27 @@ const CloseBtn = styled.div`
   }
 `
 
-export const Modal = memo(({open, onClickClose}) => {
+export const Modal = memo(({open, onClickClose, task}) => {
+  const [ inputTodo, setInputTodo] = useState('')
+
+  const onChange = (e) => {setInputTodo(e.target.value)}
+
   return(
     <>
     {open ? (
       <>
+      <ModalMask onClick={() => onClickClose()}></ModalMask>
       <ModalWindow>
         <ModalTitle>TODOを修正</ModalTitle>
+        <InputArea>
+        <InputFrom 
+          type="text"
+          id="newTask"
+          placeholder={task}
+          value={inputTodo}
+          onChange={onChange}
+        />
+        </InputArea>
       </ModalWindow>
       <CloseBtn onClick={() => {onClickClose()}}>✖︎</CloseBtn>
       </>

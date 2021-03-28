@@ -28,7 +28,7 @@ const TaskList = styled.ul`
   margin: 0;
 `
 
-export const Column = memo(({ column, tasks, onClickDelete, onClickFix }) => {
+export const Column = memo(({ column, tasks, onClickDelete }) => {
   return (
     <Container>
       <Title>{column.title}</Title>
@@ -43,7 +43,7 @@ export const Column = memo(({ column, tasks, onClickDelete, onClickFix }) => {
           isDraggingOver={snapshot.isDraggingOver}
         >
         {tasks.map((task, index) => 
-          <Task key={task.id} task={task} index={index} onClickDelete={onClickDelete} onClickFix={onClickFix}/>
+          <Task key={task.id} task={task} index={index} onClickDelete={onClickDelete} />
         )}
         {provided.placeholder}
         </TaskList>

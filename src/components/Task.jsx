@@ -1,8 +1,9 @@
-import React, { memo } from 'react'
+import React, { useState, memo } from 'react'
 import styled from 'styled-components'
 import { Draggable } from 'react-beautiful-dnd'
 import trashIcon from '../images/trash.svg'
 import fixIcon from '../images/fix.svg'
+import { Modal } from './Modal'
 
 const Container = styled.li`
   border-radius: 2px;
@@ -45,8 +46,20 @@ const FixBtn = styled.img`
   }
 `
 
-export const Task = memo(({ index, task, onClickDelete, onClickFix }) => {
+export const Task = memo(({ index, task, onClickDelete }) => {
+  const [open, setOpen] = useState(false) // モーダルの開閉
+
+  // 閉じるボタンを押した時の処理
+  const onClickClose = (event) => {
+    setOpen(false)
+  }
+  // 編集ボタンを押した時の処理
+  const onClickFix = () => {
+    setOpen(!open)
+  }
+
   return (
+    <React.Fragment>
     <Draggable 
       draggableId={task.id} index={index}>
       {(provided, snapshot) => (
@@ -56,11 +69,14 @@ export const Task = memo(({ index, task, onClickDelete, onClickFix }) => {
           ref={provided.innerRef}
           isDragging={snapshot.isDragging}
         >
-        <TaskText>{task.content}</TaskText>
-        <FixBtn src={fixIcon} onClick={() => onClickFix()}></FixBtn>
-        <DeleteBtn src={trashIcon} onClick={() => onClickDelete(index, task.id)}></DeleteBtn>
+          <TaskText>{task.content}</TaskText>
+          <FixBtn src={fixIcon} onClick={() => onClickFix()}></FixBtn>
+          <DeleteBtn src={trashIcon} onClick={() => onClickDelete(index, task.id)}></DeleteBtn>
         </Container>
       )}
     </Draggable>
+
+    <Modal open={open} onClickClose={onClickClose} task={task.content}/>
+    </React.Fragment>
   )
 })

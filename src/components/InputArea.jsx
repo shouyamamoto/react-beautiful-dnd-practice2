@@ -49,7 +49,7 @@ export const InputArea = memo(({ inputTodo, onChange, onClick, onEnter }) => {
         onChange={onChange} 
         onKeyDown={onEnter}
       />
-      <Button onClick={onClick}>追加</Button>
+      <Button onClick={onClick} disabled={!inputTodo}>追加</Button>
     </InputWrap>
   )
 })
