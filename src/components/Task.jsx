@@ -71,16 +71,7 @@ export const Task = memo(({ index, task, onClickDelete, onClickTodoFix }) => {
         >
           <TaskText>{task.content}</TaskText>
           <FixBtn src={fixIcon} onClick={() => onClickFix()}></FixBtn>
-          <DeleteBtn 
-            src={trashIcon} 
-            onClick={() => {
-              const answer = window.confirm(`${task.content}を削除しますか？`)
-              if(answer) {
-                onClickDelete(index, task.id)}
-              }
-            }
-          >
-          </DeleteBtn>
+          <DeleteBtn src={trashIcon} onClick={() => onClickDelete(index, task.id)}></DeleteBtn>
         </Container>
       )}
     </Draggable>
