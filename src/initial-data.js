@@ -1,6 +1,6 @@
 const initialData = {
   tasks: {
-    'task-1': { id: 'task-1', content: '買い物' }
+    'task-1': { id: 'task-1', content: 'HTML' }
   },
   columns: {
     'column-1': {
