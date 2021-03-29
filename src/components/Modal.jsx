@@ -145,6 +145,7 @@ export const Modal = memo(({open, onClickClose, onClickTodoFix, task, id}) => {
               if(fixTodo) {
                 onClickTodoFix(id,fixTodo)
                 onClickClose()
+                setFixTodo('')
               } else {
                 alert('TODOを入力してください')
               }
