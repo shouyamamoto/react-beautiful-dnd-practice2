@@ -142,9 +142,12 @@ export const Modal = memo(({open, onClickClose, onClickTodoFix, task, id}) => {
           <CancelBtn onClick={() => {onClickClose()}}>キャンセル</CancelBtn>
           <FixBtn 
             onClick={() => {
-              onClickTodoFix(id,fixTodo)
-              onClickClose()
-              setFixTodo('')
+              if(fixTodo) {
+                onClickTodoFix(id,fixTodo)
+                onClickClose()
+              } else {
+                alert('TODOを入力してください')
+              }
             }}
           >
             修正する
