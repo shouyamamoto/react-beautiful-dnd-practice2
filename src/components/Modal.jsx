@@ -144,6 +144,7 @@ export const Modal = memo(({open, onClickClose, onClickTodoFix, task, id}) => {
             onClick={() => {
               onClickTodoFix(id,fixTodo)
               onClickClose()
+              setFixTodo('')
             }}
           >
             修正する
