@@ -46,7 +46,6 @@ const generateInitialData = () => {
 }
 
 const initialData = generateInitialData()
-console.log(initialData)
 const taskLength = initialData.columns['Todo'].taskIds.length
 const initialTodo = ''
 
@@ -54,16 +53,53 @@ export const App = () => {
   const [countId, setCountId] = useState(taskLength) // idの値
   const [initData, setInitData] = useState(initialData) // タスクの初期化
   const [inputTodo, setInputTodo] = useState(initialTodo) // inputに入っている初期値
-  const [tasks, setTasks] = useState([{id: '', content: ''}])
 
+  /* ---------------------------------------------------------
+  ここからfirebaseに関して追記したものです。
+  -----------------------------------------------------------*/
+  const [tasks, setTasks] = useState(initialData.tasks)
+  const [todoTaskIds, setTodoTaskIds] = useState([])
+  
+  // firebaseから値を取得
   useEffect(() => {
     const unSub = db.collection('tasks').onSnapshot((snapshot)=> {
+      // stateのtasksを更新
       setTasks(
-        snapshot.docs.map((doc) => ({id: doc.id, content: doc.data().content}))
+        snapshot.docs.map((doc) => ({[doc.id]: {id: doc.id, content: doc.data().content}}))
+      )
+      // TodoのtaskIdsを更新
+      setTodoTaskIds(
+        snapshot.docs.map((doc) => doc.id)
       )
     })
     return () => unSub()
   }, [])
+
+  useEffect(() => {
+    // TODOのtaskIdsにfirebaseの値を入れる処理と、initDataのtasksにfirebaseのtasksを登録
+    const newInitTodoTaskIds = [...initData.columns['Todo'].taskIds] // stateのinitData
+      todoTaskIds.map((todoTaskId) => { // todoTaskIdsには59~70行目のuseEffectで入れたidが配列で入っている
+      newInitTodoTaskIds.push(todoTaskId) // stateのinitDataにidを追加
+    })
+    const newInitTodoColumn = { // 新しいTodoのカラムを作成
+      ...initData.columns['Todo'], // Todoのカラムをコピー
+      taskIds: newInitTodoTaskIds
+    }
+    const newInitColumn = { // 新しいカラムを作成
+      ...initData.columns, // stateのカラムをコピー
+      'Todo': newInitTodoColumn // Todoの中身を置き換え
+    }
+    const newInitData = { // 新しいinitDataを作成
+      ...initData, // stateのinitDataをコピー
+      tasks: tasks, // firebaseから取得した値で作成したtasksに置き換え
+      columns: newInitColumn // 新しいカラムに置き換え
+    }
+    setInitData(newInitData) // initDataを更新
+  }, [])
+
+  /* ---------------------------------------------------------
+  ここまでがfirebaseに関して追記したものです。
+  -----------------------------------------------------------*/
 
   // 入力中のレンダリング処理
   const onInputChange = useCallback((e) => {
@@ -101,7 +137,7 @@ export const App = () => {
 
     setInitData(newState)
     setInputTodo('')
-    setCountId(newTaskId)// eslint-disable-next-line
+    setCountId(newTaskId)
   }
   
   // エンターキーを押したときの処理
@@ -220,9 +256,12 @@ export const App = () => {
       />
       <DragDropContext onDragEnd={onDragEnd}>
         <Container>
+        { // useEffectで実行している処理の前のinitDataを参照している
+          console.log(initData)
+        }
         {initData.columnOrder.map((columnId) => {
           const column = initData.columns[columnId]
-          const tasks = column.taskIds.map(
+          const taskList = column.taskIds.map(
             taskId => initData.tasks[taskId]
           )
           
@@ -230,7 +269,7 @@ export const App = () => {
             <Column 
               key={column.id} 
               column={column} 
-              tasks={tasks} 
+              tasks={taskList} 
               onClickDelete={onClickDelete}
               onClickTodoFix={onClickTodoFix}
             /> 
