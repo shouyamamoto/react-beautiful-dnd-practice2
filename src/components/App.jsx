@@ -92,36 +92,8 @@ export const App = () => {
   
   // 追加ボタンを押した時の処理
   const onBtnClick = () => {
-    if(!inputTodo) {
-      return
-    }
-    const newTaskId = countId + 1
-    const newTaskIds = [...initData.columns['Todo'].taskIds]
-    newTaskIds.push(`task${newTaskId}`)
-    
-    const newTodoColumn = {
-      ...initData.columns['Todo'],
-      taskIds: newTaskIds
-    }
-    
-    const newColumns = {
-      ...initData.columns,
-      'Todo': newTodoColumn
-    }
-
-    const newTasks = {...initData.tasks}
-    const taskKey = `task${newTaskId}`
-    newTasks[taskKey] = {id: `task${newTaskId}`, content: inputTodo}
-
-    const newState = {
-      ...initData,
-      tasks: newTasks,
-      columns: newColumns
-    }
-
-    setInitData(newState)
+    db.collection('tasks').add({content: inputTodo})
     setInputTodo('')
-    setCountId(newTaskId)
   }
   
   // エンターキーを押したときの処理
