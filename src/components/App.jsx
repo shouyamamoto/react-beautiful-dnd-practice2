@@ -1,15 +1,15 @@
 // React
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 // css関連
 import '@atlaskit/css-reset'
 import styled from 'styled-components'
 // react-beautiful-dnd
 import { DragDropContext } from 'react-beautiful-dnd'
-// stateとして持つオブジェクト
-import initialData from '../initial-data'
 // コンポーネント
 import { InputArea } from './InputArea'
 import { Column } from './Column'
+// firebase
+import { db } from '../firebase'
 
 const Container = styled.div`
   display: flex;
@@ -20,12 +20,70 @@ const AppContainer = styled.div`
   margin: 0 auto;
 `
 
-export const App = () => {
-  const tasks = initialData.columns['column-1'].taskIds.length
+const TODO = 'Todo'
+const PROGRESS = 'Progress'
+const DONE = 'Done'
 
-  const [countId, setCountId] = useState(tasks) // idの値
+const generateInitialData = () => {
+  const COLUMNS = [ TODO, PROGRESS, DONE ]
+  const columns = {}
+  const initialTasks  = {}
+
+  COLUMNS.forEach(
+    (column) => 
+      (columns[column] = {
+        id: column,
+        title: column,
+        taskIds: []
+      })
+  )
+
+  return {
+    tasks: initialTasks,
+    columns,
+    columnOrder: COLUMNS
+  }
+}
+
+const initialData = generateInitialData()
+const taskLength = initialData.columns['Todo'].taskIds.length
+const initialTodo = ''
+
+export const App = () => {
+  const [countId, setCountId] = useState(taskLength) // idの値
   const [initData, setInitData] = useState(initialData) // タスクの初期化
-  const [inputTodo, setInputTodo] = useState('')
+  const [inputTodo, setInputTodo] = useState(initialTodo) // inputに入っている初期値
+
+  useEffect(() => {
+    const unSub = db.collection('tasks').onSnapshot((snapshot)=> {
+      const newInitDataTasks = snapshot.docs.map((doc) => ({id: doc.id, content: doc.data().content}))
+      const todoTaskIds = snapshot.docs.map((doc) => doc.id)
+      // newInitDataTasksをオブジェクトに変換
+      const newTasks = {}
+      newInitDataTasks.forEach(newInitTask => {
+        newTasks[newInitTask.id] = newInitTask
+      })
+      const newTodoTaskIds = [...initData.columns['Todo'].taskIds]
+      todoTaskIds.map(todoTaskId => {
+        newTodoTaskIds.push(todoTaskId)
+      })
+      const newInitTodoTaskIds = {
+        ...initData.columns['Todo'],
+        taskIds: newTodoTaskIds
+      }
+      const newInitColumns = {
+        ...initData.columns,
+        ['Todo']: newInitTodoTaskIds
+      }
+      const newInitData = {
+        ...initData,
+        tasks: newTasks,
+        columns: newInitColumns
+      }
+      setInitData(newInitData)
+    })
+    return () => unSub();
+  }, [])
 
   // 入力中のレンダリング処理
   const onInputChange = useCallback((e) => {
@@ -38,17 +96,17 @@ export const App = () => {
       return
     }
     const newTaskId = countId + 1
-    const newTaskIds = [...initData.columns['column-1'].taskIds]
+    const newTaskIds = [...initData.columns['Todo'].taskIds]
     newTaskIds.push(`task${newTaskId}`)
     
     const newTodoColumn = {
-      ...initData.columns['column-1'],
+      ...initData.columns['Todo'],
       taskIds: newTaskIds
     }
     
     const newColumns = {
       ...initData.columns,
-      'column-1': newTodoColumn
+      'Todo': newTodoColumn
     }
 
     const newTasks = {...initData.tasks}
@@ -184,15 +242,14 @@ export const App = () => {
         <Container>
         {initData.columnOrder.map((columnId) => {
           const column = initData.columns[columnId]
-          const tasks = column.taskIds.map(
+          const taskList = column.taskIds.map(
             taskId => initData.tasks[taskId]
           )
-          
           return (
             <Column 
               key={column.id} 
               column={column} 
-              tasks={tasks} 
+              tasks={taskList} 
               onClickDelete={onClickDelete}
               onClickTodoFix={onClickTodoFix}
             /> 

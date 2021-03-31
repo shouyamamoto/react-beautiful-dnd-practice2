@@ -1,25 +1,26 @@
 const initialData = {
   tasks: {
-    'task-1': { id: 'task-1', content: '買い物' }
+    // ここにtaskを登録していきたい
+    // ex ) task1 : { id: task1, content: 'これはタスク1です'}
   },
   columns: {
-    'column-1': {
-      id: 'column-1',
+    'Todo': {
+      id: 'Todo',
       title: 'Todo',
-      taskIds: ['task-1']
+      taskIds: [] // ここにfirebaseで取得してきたtaskのidを入れたい
     },
-    'column-2': {
-      id: 'column-2',
+    'Progress': {
+      id: 'Progress',
       title: 'Progress',
       taskIds: []
     },
-    'column-3': {
-      id: 'column-3',
+    'Done': {
+      id: 'Done',
       title: 'Done',
       taskIds: []
     },
   },
-  columnOrder: ['column-1', 'column-2', 'column-3'],
+  columnOrder: ['Todo', 'Progress', 'Done'],
 }
 
 export default initialData
