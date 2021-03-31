@@ -106,27 +106,8 @@ export const App = () => {
   }
   
   // 削除ボタンを押した時の処理
-  const onClickDelete = (index, taskId) => {
-    const newColumns = {...initData.columns} // columnsをコピー
-    const newTasks = {...initData.tasks} // tasksをコピー
-
-    Object.keys(newColumns).forEach(column => {
-       // 削除アイコンを押したtaskがそれぞれのcolumnにあるかを検索
-      const deleteTarget = newColumns[column].taskIds.find(task => task === taskId)
-      if( deleteTarget ) { // 削除対象のtaskが見つかれば実行
-        newColumns[column].taskIds.splice(index, 1) // 削除対象があるcolumnがforEachで回ってきた時にだけ、そのcolumnからtaskを削除
-      }
-    })
-
-    delete newTasks[taskId] // tasksから削除ボタンを押したtaskを削除する
-
-    const newState = {
-      ...initialData,
-      tasks: newTasks,
-      columns: newColumns,
-    }
-
-    setInitData(newState)
+  const onClickDelete = (id) => {
+    db.collection('tasks').doc(id).delete()
   }
   
   // タスクを移動した時の処理

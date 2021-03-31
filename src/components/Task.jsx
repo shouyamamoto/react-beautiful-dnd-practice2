@@ -76,7 +76,7 @@ export const Task = memo(({ index, task, onClickDelete, onClickTodoFix }) => {
             onClick={() => {
               const answer = window.confirm(`${task.content}を削除しますか？`)
               if(answer) {
-                onClickDelete(index, task.id)}
+                onClickDelete(task.id)}
               }
             }
           >
