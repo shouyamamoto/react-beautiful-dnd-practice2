@@ -55,7 +55,7 @@ export const App = () => {
   const [inputTodo, setInputTodo] = useState(initialTodo) // inputに入っている初期値
 
   useEffect(() => {
-    db.collection('tasks').onSnapshot((snapshot)=> {
+    const unSub = db.collection('tasks').onSnapshot((snapshot)=> {
       const newInitDataTasks = snapshot.docs.map((doc) => ({id: doc.id, content: doc.data().content}))
       const todoTaskIds = snapshot.docs.map((doc) => doc.id)
       // newInitDataTasksをオブジェクトに変換
@@ -82,6 +82,7 @@ export const App = () => {
       }
       setInitData(newInitData)
     })
+    return () => unSub();
   }, [])
 
   // 入力中のレンダリング処理
