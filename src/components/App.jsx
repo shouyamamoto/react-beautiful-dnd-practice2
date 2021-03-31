@@ -54,52 +54,35 @@ export const App = () => {
   const [initData, setInitData] = useState(initialData) // タスクの初期化
   const [inputTodo, setInputTodo] = useState(initialTodo) // inputに入っている初期値
 
-  /* ---------------------------------------------------------
-  ここからfirebaseに関して追記したものです。
-  -----------------------------------------------------------*/
-  const [tasks, setTasks] = useState(initialData.tasks)
-  const [todoTaskIds, setTodoTaskIds] = useState([])
-  
-  // firebaseから値を取得
   useEffect(() => {
-    const unSub = db.collection('tasks').onSnapshot((snapshot)=> {
-      // stateのtasksを更新
-      setTasks(
-        snapshot.docs.map((doc) => ({[doc.id]: {id: doc.id, content: doc.data().content}}))
-      )
-      // TodoのtaskIdsを更新
-      setTodoTaskIds(
-        snapshot.docs.map((doc) => doc.id)
-      )
+    db.collection('tasks').onSnapshot((snapshot)=> {
+      const newInitDataTasks = snapshot.docs.map((doc) => ({id: doc.id, content: doc.data().content}))
+      const todoTaskIds = snapshot.docs.map((doc) => doc.id)
+      // newInitDataTasksをオブジェクトに変換
+      const newTasks = {}
+      newInitDataTasks.forEach(newInitTask => {
+        newTasks[newInitTask.id] = newInitTask
+      })
+      const newTodoTaskIds = [...initData.columns['Todo'].taskIds]
+      todoTaskIds.map(todoTaskId => {
+        newTodoTaskIds.push(todoTaskId)
+      })
+      const newInitTodoTaskIds = {
+        ...initData.columns['Todo'],
+        taskIds: newTodoTaskIds
+      }
+      const newInitColumns = {
+        ...initData.columns,
+        ['Todo']: newInitTodoTaskIds
+      }
+      const newInitData = {
+        ...initData,
+        tasks: newTasks,
+        columns: newInitColumns
+      }
+      setInitData(newInitData)
     })
-    return () => unSub()
   }, [])
-
-  useEffect(() => {
-    // TODOのtaskIdsにfirebaseの値を入れる処理と、initDataのtasksにfirebaseのtasksを登録
-    const newInitTodoTaskIds = [...initData.columns['Todo'].taskIds] // stateのinitData
-      todoTaskIds.map((todoTaskId) => { // todoTaskIdsには59~70行目のuseEffectで入れたidが配列で入っている
-      newInitTodoTaskIds.push(todoTaskId) // stateのinitDataにidを追加
-    })
-    const newInitTodoColumn = { // 新しいTodoのカラムを作成
-      ...initData.columns['Todo'], // Todoのカラムをコピー
-      taskIds: newInitTodoTaskIds
-    }
-    const newInitColumn = { // 新しいカラムを作成
-      ...initData.columns, // stateのカラムをコピー
-      'Todo': newInitTodoColumn // Todoの中身を置き換え
-    }
-    const newInitData = { // 新しいinitDataを作成
-      ...initData, // stateのinitDataをコピー
-      tasks: tasks, // firebaseから取得した値で作成したtasksに置き換え
-      columns: newInitColumn // 新しいカラムに置き換え
-    }
-    setInitData(newInitData) // initDataを更新
-  }, [])
-
-  /* ---------------------------------------------------------
-  ここまでがfirebaseに関して追記したものです。
-  -----------------------------------------------------------*/
 
   // 入力中のレンダリング処理
   const onInputChange = useCallback((e) => {
@@ -256,15 +239,11 @@ export const App = () => {
       />
       <DragDropContext onDragEnd={onDragEnd}>
         <Container>
-        { // useEffectで実行している処理の前のinitDataを参照している
-          console.log(initData)
-        }
         {initData.columnOrder.map((columnId) => {
           const column = initData.columns[columnId]
           const taskList = column.taskIds.map(
             taskId => initData.tasks[taskId]
           )
-          
           return (
             <Column 
               key={column.id} 
