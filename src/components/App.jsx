@@ -46,13 +46,10 @@ const generateInitialData = () => {
 }
 
 const initialData = generateInitialData()
-const taskLength = initialData.columns['Todo'].taskIds.length
-const initialTodo = ''
 
 export const App = () => {
-  const [countId, setCountId] = useState(taskLength) // idの値
   const [initData, setInitData] = useState(initialData) // タスクの初期化
-  const [inputTodo, setInputTodo] = useState(initialTodo) // inputに入っている初期値
+  const [inputTodo, setInputTodo] = useState('') // inputに入っている初期値
 
   useEffect(() => {
     const unSub = db.collection('tasks').onSnapshot((snapshot)=> {
@@ -105,34 +102,12 @@ export const App = () => {
 
   // モーダル内の修正するボタンを押した時の処理
   const onClickTodoFix = (id, fixTodo) => {
-    const newInitData = {...initData}
-    newInitData.tasks[id].content = fixTodo
-
-    setInitData(newInitData)
+    db.collection('tasks').doc(id).set({content: fixTodo}, {merge: true})
   }
   
   // 削除ボタンを押した時の処理
-  const onClickDelete = (index, taskId) => {
-    const newColumns = {...initData.columns} // columnsをコピー
-    const newTasks = {...initData.tasks} // tasksをコピー
-
-    Object.keys(newColumns).forEach(column => {
-       // 削除アイコンを押したtaskがそれぞれのcolumnにあるかを検索
-      const deleteTarget = newColumns[column].taskIds.find(task => task === taskId)
-      if( deleteTarget ) { // 削除対象のtaskが見つかれば実行
-        newColumns[column].taskIds.splice(index, 1) // 削除対象があるcolumnがforEachで回ってきた時にだけ、そのcolumnからtaskを削除
-      }
-    })
-
-    delete newTasks[taskId] // tasksから削除ボタンを押したtaskを削除する
-
-    const newState = {
-      ...initialData,
-      tasks: newTasks,
-      columns: newColumns,
-    }
-
-    setInitData(newState)
+  const onClickDelete = (id) => {
+    db.collection('tasks').doc(id).delete()
   }
   
   // タスクを移動した時の処理
