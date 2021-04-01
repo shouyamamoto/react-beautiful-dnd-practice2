@@ -10,6 +10,7 @@ import { InputArea } from './InputArea'
 import { Column } from './Column'
 // firebase
 import { db } from '../firebase'
+import { auth } from '../firebase'
 
 const Container = styled.div`
   display: flex;
@@ -18,6 +19,25 @@ const Container = styled.div`
 const AppContainer = styled.div`
   width: 100%;
   margin: 0 auto;
+`
+
+const LogoutBtn = styled.button`
+  padding: 16px;
+  margin: 8px;
+  border: none;
+  border-radius: 4px;
+  out-line: none;
+  cursor: pointer;
+  color: white;
+  background-color: #1d160b;
+  border: 8px;
+  font-size: 16px;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #b76f0e;
+    color: white;
+  }
 `
 
 const TODO = 'Todo'
@@ -47,10 +67,11 @@ const generateInitialData = () => {
 
 const initialData = generateInitialData()
 
-export const App = () => {
+export const App = ({ history }) => {
   const [initData, setInitData] = useState(initialData) // タスクの初期化
   const [inputTodo, setInputTodo] = useState('') // inputに入っている初期値
-
+  
+  // タスクを取得する
   useEffect(() => {
     const unSub = db.collection('tasks').onSnapshot((snapshot)=> {
       const newInitDataTasks = snapshot.docs.map((doc) => ({id: doc.id, content: doc.data().content}))
@@ -82,6 +103,14 @@ export const App = () => {
     return () => unSub();
   }, [])
 
+  // 認証機能
+  useEffect(() => {
+    const unSub = auth.onAuthStateChanged((user) => {
+      !user && history.push('login')
+    })
+    return () => unSub()
+  })
+
   // 入力中のレンダリング処理
   const onInputChange = useCallback((e) => {
     setInputTodo(e.target.value)}, []
@@ -89,6 +118,9 @@ export const App = () => {
   
   // 追加ボタンを押した時の処理
   const onBtnClick = () => {
+    if(!inputTodo) {
+      return
+    }
     db.collection('tasks').add({content: inputTodo})
     setInputTodo('')
   }
@@ -204,6 +236,18 @@ export const App = () => {
         })}
         </Container>
       </DragDropContext>
+      <LogoutBtn onClick={
+        async () => {
+          try {
+            await auth.signOut()
+            history.push('login')
+          } catch(error) {
+            alert(error.message)
+          }
+        }
+      }>
+      logout ?
+      </LogoutBtn>
     </AppContainer>
   )
 }
