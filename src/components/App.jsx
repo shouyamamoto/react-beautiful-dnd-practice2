@@ -51,7 +51,8 @@ const initialData = generateInitialData()
 export const App = ({ history }) => {
   const [initData, setInitData] = useState(initialData) // タスクの初期化
   const [inputTodo, setInputTodo] = useState('') // inputに入っている初期値
-
+  
+  // タスクを取得する
   useEffect(() => {
     const unSub = db.collection('tasks').onSnapshot((snapshot)=> {
       const newInitDataTasks = snapshot.docs.map((doc) => ({id: doc.id, content: doc.data().content}))
@@ -83,6 +84,7 @@ export const App = ({ history }) => {
     return () => unSub();
   }, [])
 
+  // 認証機能
   useEffect(() => {
     const unSub = auth.onAuthStateChanged((user) => {
       !user && history.push('login')
@@ -97,6 +99,9 @@ export const App = ({ history }) => {
   
   // 追加ボタンを押した時の処理
   const onBtnClick = () => {
+    if(!inputTodo) {
+      return
+    }
     db.collection('tasks').add({content: inputTodo})
     setInputTodo('')
   }
