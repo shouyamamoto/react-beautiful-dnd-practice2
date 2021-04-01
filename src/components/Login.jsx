@@ -2,6 +2,54 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { auth } from '../firebase'
 
+const LoginContainer = styled.div`
+  padding: 60px 120px;
+  background-color: #efe2cf;
+  border-radius: 8px;
+`
+
+const LoginTitle = styled.h1`
+  color: #1d160b;
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 20px;
+`
+
+const InputArea = styled.div`
+  text-align: center;
+`
+
+const InputForm = styled.input`
+  padding: 10px 16px;
+  margin: 4px 0;
+  font-size: 16px;
+  color: #1d160b;
+`
+
+const LoginBtn = styled.button`
+  padding: 16px;
+  margin: 20px 0 10px;
+  width: 100%;
+  border: none;
+  out-line: none;
+  cursor: pointer;
+  color: white;
+  background-color: #1d160b;
+  border: 8px;
+  font-size: 16px;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #b76f0e;
+    color: white;
+  }
+`
+
+const ToggleLogin = styled.span`
+  color: #1d160b;
+  cursor: pointer;
+`
+
 export const Login = ({ history }) => {
   const [ isLogin, setIsLogin ] = useState(true)
   const [ email, setEmail ] = useState('')
@@ -17,10 +65,11 @@ export const Login = ({ history }) => {
   }, [history])
 
   return (
-    <div>
-      <h1>{isLogin ? 'Login' : 'Register' }</h1>
+    <LoginContainer>
+      <LoginTitle>{isLogin ? 'Login' : 'Register' }</LoginTitle>
       <br />
-      <input 
+      <InputArea>
+      <InputForm
         type="text" 
         name="email" 
         aria-label="E-mail" 
@@ -30,7 +79,7 @@ export const Login = ({ history }) => {
         }} 
       />
       <br />
-      <input 
+      <InputForm
         type="password"
         aria-label="Password"
         name="password"
@@ -39,8 +88,8 @@ export const Login = ({ history }) => {
           setPassword(e.target.value)
         }} 
       />
-      <br />
-      <button
+      </InputArea>
+      <LoginBtn
         type="submit"
         onClick={
           isLogin 
@@ -63,12 +112,12 @@ export const Login = ({ history }) => {
           }
       >
       { isLogin ? 'login' : 'Register' }
-      </button>
+      </LoginBtn>
       <br />
-      <span onClick={() => setIsLogin(!isLogin)}>
+      <ToggleLogin onClick={() => setIsLogin(!isLogin)}>
         { isLogin ? "Create new account ? " : "Back to Login" }
-      </span>
-    </div>
+      </ToggleLogin>
+    </LoginContainer>
   )
 }
 

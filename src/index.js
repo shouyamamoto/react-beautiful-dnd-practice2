@@ -11,6 +11,7 @@ document.body.style.height = '100%'
 document.body.style.display = 'flex'
 document.body.style.justifyContent = 'center'
 document.body.style.alignItems = 'center'
+document.body.style.letterSpacing = '0.05'
 
 ReactDOM.render(
   <React.StrictMode>
