@@ -10,6 +10,7 @@ import { InputArea } from './InputArea'
 import { Column } from './Column'
 // firebase
 import { db } from '../firebase'
+import { auth } from '../firebase'
 
 const Container = styled.div`
   display: flex;
@@ -47,7 +48,7 @@ const generateInitialData = () => {
 
 const initialData = generateInitialData()
 
-export const App = () => {
+export const App = ({ history }) => {
   const [initData, setInitData] = useState(initialData) // タスクの初期化
   const [inputTodo, setInputTodo] = useState('') // inputに入っている初期値
 
@@ -81,6 +82,13 @@ export const App = () => {
     })
     return () => unSub();
   }, [])
+
+  useEffect(() => {
+    const unSub = auth.onAuthStateChanged((user) => {
+      !user && history.push('login')
+    })
+    return () => unSub()
+  })
 
   // 入力中のレンダリング処理
   const onInputChange = useCallback((e) => {
@@ -204,6 +212,18 @@ export const App = () => {
         })}
         </Container>
       </DragDropContext>
+      <button onClick={
+        async () => {
+          try {
+            await auth.signOut()
+            history.push('login')
+          } catch(error) {
+            alert(error.message)
+          }
+        }
+      }>
+      logout ?
+      </button>
     </AppContainer>
   )
 }
