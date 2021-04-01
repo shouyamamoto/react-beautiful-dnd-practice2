@@ -21,6 +21,25 @@ const AppContainer = styled.div`
   margin: 0 auto;
 `
 
+const LogoutBtn = styled.button`
+  padding: 16px;
+  margin: 8px;
+  border: none;
+  border-radius: 4px;
+  out-line: none;
+  cursor: pointer;
+  color: white;
+  background-color: #1d160b;
+  border: 8px;
+  font-size: 16px;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #b76f0e;
+    color: white;
+  }
+`
+
 const TODO = 'Todo'
 const PROGRESS = 'Progress'
 const DONE = 'Done'
@@ -217,7 +236,7 @@ export const App = ({ history }) => {
         })}
         </Container>
       </DragDropContext>
-      <button onClick={
+      <LogoutBtn onClick={
         async () => {
           try {
             await auth.signOut()
@@ -228,7 +247,7 @@ export const App = ({ history }) => {
         }
       }>
       logout ?
-      </button>
+      </LogoutBtn>
     </AppContainer>
   )
 }
