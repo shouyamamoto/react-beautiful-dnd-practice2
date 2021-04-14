@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Droppable } from 'react-beautiful-dnd'
 import { Task } from './Task'
 
-export const Column = memo(({ column, tasks, onClickDelete, onClickTodoFix }) => {
+export const Column = memo(({ column, tasks }) => {
   return (
     <SContainer>
       <STitle>{column.title}</STitle>
@@ -18,7 +18,7 @@ export const Column = memo(({ column, tasks, onClickDelete, onClickTodoFix }) =>
           isDraggingOver={snapshot.isDraggingOver}
         >
         {tasks.map((task, index) => 
-          <Task key={task.id} task={task} index={index} onClickDelete={onClickDelete} onClickTodoFix={onClickTodoFix}/>
+          <Task key={task.id} task={task} index={index} />
         )}
         {provided.placeholder}
         </STaskList>

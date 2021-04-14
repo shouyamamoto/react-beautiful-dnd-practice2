@@ -1,12 +1,15 @@
-import React, { useState, memo } from 'react'
+import React, { useState, useContext, memo } from 'react'
 import styled from 'styled-components'
 import { Draggable } from 'react-beautiful-dnd'
 import trashIcon from '../images/trash.svg'
 import fixIcon from '../images/fix.svg'
 import { Modal } from './Modal'
+import { TaskContext } from './App' 
 
-export const Task = memo(({ index, task, onClickDelete, onClickTodoFix }) => {
+export const Task = memo(({ index, task }) => {
   const [open, setOpen] = useState(false) // モーダルの開閉
+
+  const { onClickDelete, onClickTodoFix } = useContext(TaskContext)
 
   // 閉じるボタンを押した時の処理
   const onClickClose = (event) => {

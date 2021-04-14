@@ -13,6 +13,7 @@ import { db } from '../firebase'
 import { auth } from '../firebase'
 
 export const InputAreaContext = createContext()
+export const TaskContext = createContext()
 
 const TODO = 'Todo'
 const PROGRESS = 'Progress'
@@ -56,15 +57,15 @@ export const App = ({ history }) => {
   // タスクを取得する
   useEffect(() => {
     const unSub = db.collection('tasks').onSnapshot((snapshot)=> {
-      const newInitDataTasks = snapshot.docs.map((doc) => ({id: doc.id, content: doc.data().content}))
-      const todoTaskIds = snapshot.docs.map((doc) => doc.id)
+      const newInitDataTasks = snapshot.docs.map( doc => ({id: doc.id, content: doc.data().content}))
+      const todoTaskIds = snapshot.docs.map( doc => doc.id)
       // newInitDataTasksをオブジェクトに変換
       const newTasks = {}
       newInitDataTasks.forEach(newInitTask => {
         newTasks[newInitTask.id] = newInitTask
       })
       const newTodoTaskIds = [...initData.columns['Todo'].taskIds]
-      todoTaskIds.map(todoTaskId => {
+      todoTaskIds.forEach(todoTaskId => {
         newTodoTaskIds.push(todoTaskId)
       })
       const newInitTodoTaskIds = {
@@ -73,7 +74,7 @@ export const App = ({ history }) => {
       }
       const newInitColumns = {
         ...initData.columns,
-        ['Todo']: newInitTodoTaskIds
+        'Todo': newInitTodoTaskIds
       }
       const newInitData = {
         ...initData,
@@ -83,6 +84,9 @@ export const App = ({ history }) => {
       setInitData(newInitData)
     })
     return () => unSub();
+
+    // initData 初回レンダリング時のみ取得したいため削除
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // 入力中のレンダリング処理
@@ -183,10 +187,20 @@ export const App = ({ history }) => {
     setInitData(newState)
   }
 
+  // ログアウト処理
+  const logOut = async () => {
+    try {
+      await auth.signOut()
+      history.push('login')
+    } catch(error) {
+      alert(error.message)
+    }
+  }
+
   return (
     <SAppContainer>
       <InputAreaContext.Provider value={ {inputTodo, onInputChange, onBtnClick, onKeyDown } }>
-        <InputArea />
+      <InputArea />
       </InputAreaContext.Provider>
       
       <DragDropContext onDragEnd={onDragEnd}>
@@ -197,27 +211,18 @@ export const App = ({ history }) => {
             taskId => initData.tasks[taskId]
           )
           return (
+            <TaskContext.Provider value={ {onClickDelete, onClickTodoFix} }>
             <Column 
               key={column.id} 
               column={column} 
               tasks={taskList} 
-              onClickDelete={onClickDelete}
-              onClickTodoFix={onClickTodoFix}
             /> 
+            </TaskContext.Provider>
           )
         })}
         </SContainer>
       </DragDropContext>
-      <SLogoutBtn onClick={
-        async () => {
-          try {
-            await auth.signOut()
-            history.push('login')
-          } catch(error) {
-            alert(error.message)
-          }
-        }
-      }>
+      <SLogoutBtn onClick={logOut}>
       logout ?
       </SLogoutBtn>
     </SAppContainer>
