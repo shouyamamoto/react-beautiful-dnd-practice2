@@ -1,5 +1,5 @@
 // React
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect, createContext } from 'react'
 // css関連
 import '@atlaskit/css-reset'
 import styled from 'styled-components'
@@ -12,33 +12,7 @@ import { Column } from './Column'
 import { db } from '../firebase'
 import { auth } from '../firebase'
 
-const Container = styled.div`
-  display: flex;
-  justify-content: space-between;
-`
-const AppContainer = styled.div`
-  width: 100%;
-  margin: 0 auto;
-`
-
-const LogoutBtn = styled.button`
-  padding: 16px;
-  margin: 8px;
-  border: none;
-  border-radius: 4px;
-  out-line: none;
-  cursor: pointer;
-  color: white;
-  background-color: #1d160b;
-  border: 8px;
-  font-size: 16px;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: #b76f0e;
-    color: white;
-  }
-`
+export const InputAreaContext = createContext()
 
 const TODO = 'Todo'
 const PROGRESS = 'Progress'
@@ -70,6 +44,14 @@ const initialData = generateInitialData()
 export const App = ({ history }) => {
   const [initData, setInitData] = useState(initialData) // タスクの初期化
   const [inputTodo, setInputTodo] = useState('') // inputに入っている初期値
+
+  // 認証機能
+  useEffect(() => {
+    const unSub = auth.onAuthStateChanged((user) => {
+      !user && history.push('login')
+    })
+    return () => unSub()
+  })
   
   // タスクを取得する
   useEffect(() => {
@@ -102,14 +84,6 @@ export const App = ({ history }) => {
     })
     return () => unSub();
   }, [])
-
-  // 認証機能
-  useEffect(() => {
-    const unSub = auth.onAuthStateChanged((user) => {
-      !user && history.push('login')
-    })
-    return () => unSub()
-  })
 
   // 入力中のレンダリング処理
   const onInputChange = useCallback((e) => {
@@ -210,15 +184,13 @@ export const App = ({ history }) => {
   }
 
   return (
-    <AppContainer>
-      <InputArea 
-        inputTodo={inputTodo} 
-        onChange={onInputChange} 
-        onClick={onBtnClick} 
-        onEnter={onKeyDown}
-      />
+    <SAppContainer>
+      <InputAreaContext.Provider value={ {inputTodo, onInputChange, onBtnClick, onKeyDown } }>
+        <InputArea />
+      </InputAreaContext.Provider>
+      
       <DragDropContext onDragEnd={onDragEnd}>
-        <Container>
+        <SContainer>
         {initData.columnOrder.map((columnId) => {
           const column = initData.columns[columnId]
           const taskList = column.taskIds.map(
@@ -234,9 +206,9 @@ export const App = ({ history }) => {
             /> 
           )
         })}
-        </Container>
+        </SContainer>
       </DragDropContext>
-      <LogoutBtn onClick={
+      <SLogoutBtn onClick={
         async () => {
           try {
             await auth.signOut()
@@ -247,7 +219,35 @@ export const App = ({ history }) => {
         }
       }>
       logout ?
-      </LogoutBtn>
-    </AppContainer>
+      </SLogoutBtn>
+    </SAppContainer>
   )
 }
+
+const SContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
+const SAppContainer = styled.div`
+  width: 100%;
+  margin: 0 auto;
+`
+
+const SLogoutBtn = styled.button`
+  padding: 16px;
+  margin: 8px;
+  border: none;
+  border-radius: 4px;
+  out-line: none;
+  cursor: pointer;
+  color: white;
+  background-color: #1d160b;
+  border: 8px;
+  font-size: 16px;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #b76f0e;
+    color: white;
+  }
+`

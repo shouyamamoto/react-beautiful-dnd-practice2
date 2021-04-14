@@ -1,7 +1,57 @@
 import React, { memo, useState } from 'react'
 import styled from 'styled-components'
 
-const ModalMask = styled.div`
+export const Modal = memo(({open, onClickClose, onClickTodoFix, task, id}) => {
+  const [ fixTodo, setFixTodo ] = useState('')
+
+  const onChange = (e) => {setFixTodo(e.target.value)}
+
+  return(
+    <>
+    {open ? (
+      <>
+      <SModalMask onClick={() => onClickClose()}></SModalMask>
+      <SModalWindow>
+        <SModalInner>
+        <SModalTitle>TODOを修正</SModalTitle>
+        <SInputArea>
+        <SInputFrom 
+          type="text"
+          id="newTask"
+          placeholder={task}
+          value={fixTodo}
+          onChange={onChange}
+        />
+
+        <SBtnArea>
+          <SCancelBtn onClick={() => {onClickClose()}}>キャンセル</SCancelBtn>
+          <SFixBtn 
+            onClick={() => {
+              if(fixTodo) {
+                onClickTodoFix(id,fixTodo)
+                onClickClose()
+                setFixTodo('')
+              } else {
+                alert('TODOを入力してください')
+              }
+            }}
+          >
+            修正する
+          </SFixBtn>
+        </SBtnArea>
+        </SInputArea>
+        </SModalInner>
+      </SModalWindow>
+      <SCloseBtn onClick={() => {onClickClose()}}>✖︎</SCloseBtn>
+      </>
+    ): null
+    }
+    </>
+  )
+})
+
+
+const SModalMask = styled.div`
   width: 100%;
   height: 100%;
   background-color: rgba(0,0,0,0.6);
@@ -12,7 +62,7 @@ const ModalMask = styled.div`
   right: 0;
 `
 
-const ModalWindow = styled.div`
+const SModalWindow = styled.div`
   width: 70vw;
   max-width: 400px;
   height: 30vh;
@@ -29,24 +79,24 @@ const ModalWindow = styled.div`
   align-items: center;
 `
 
-const ModalInner = styled.div`
+const SModalInner = styled.div`
   width: 90%;
 `
 
-const ModalTitle = styled.p`
+const SModalTitle = styled.p`
   color: #2e281f;
   text-align: center;
   font-size: 18px;
   font-weight: bold;
 `
 
-const InputArea = styled.div`
+const SInputArea = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 20px;
 `
 
-const InputFrom = styled.input`
+const SInputFrom = styled.input`
   padding: 20px;
   border-radius: 2px;
   border: 1px solid lightgray;
@@ -60,13 +110,13 @@ const InputFrom = styled.input`
   }
 `
 
-const BtnArea = styled.div`
+const SBtnArea = styled.div`
   display: flex;
   justify-content: flex-end;
   margin: 20px 0;
 `
 
-const FixBtn = styled.button`
+const SFixBtn = styled.button`
   border: none;
   padding: 8px 20px;
   cursor: pointer;
@@ -81,7 +131,7 @@ const FixBtn = styled.button`
   }
 `
 
-const CancelBtn = styled.button`
+const SCancelBtn = styled.button`
   border: none;
   padding: 8px 20px;
   margin-right: 10px;
@@ -97,7 +147,7 @@ const CancelBtn = styled.button`
   }
 `
 
-const CloseBtn = styled.button`
+const SCloseBtn = styled.button`
   position: absolute;
   top: 8%;
   right: 5%;
@@ -115,52 +165,3 @@ const CloseBtn = styled.button`
     background-color: #1d160b;
   }
 `
-
-export const Modal = memo(({open, onClickClose, onClickTodoFix, task, id}) => {
-  const [ fixTodo, setFixTodo ] = useState('')
-
-  const onChange = (e) => {setFixTodo(e.target.value)}
-
-  return(
-    <>
-    {open ? (
-      <>
-      <ModalMask onClick={() => onClickClose()}></ModalMask>
-      <ModalWindow>
-        <ModalInner>
-        <ModalTitle>TODOを修正</ModalTitle>
-        <InputArea>
-        <InputFrom 
-          type="text"
-          id="newTask"
-          placeholder={task}
-          value={fixTodo}
-          onChange={onChange}
-        />
-
-        <BtnArea>
-          <CancelBtn onClick={() => {onClickClose()}}>キャンセル</CancelBtn>
-          <FixBtn 
-            onClick={() => {
-              if(fixTodo) {
-                onClickTodoFix(id,fixTodo)
-                onClickClose()
-                setFixTodo('')
-              } else {
-                alert('TODOを入力してください')
-              }
-            }}
-          >
-            修正する
-          </FixBtn>
-        </BtnArea>
-        </InputArea>
-        </ModalInner>
-      </ModalWindow>
-      <CloseBtn onClick={() => {onClickClose()}}>✖︎</CloseBtn>
-      </>
-    ): null
-    }
-    </>
-  )
-})

@@ -1,11 +1,30 @@
-import React, { memo } from 'react'
+import React, { memo, useContext } from 'react'
 import styled from 'styled-components'
+import { InputAreaContext } from './App'
 
-const InputWrap = styled.div`
+export const InputArea = memo(() => {
+  const { inputTodo, onInputChange, onBtnClick, onKeyDown } = useContext(InputAreaContext)
+  
+  return (
+    <SInputWrap>
+      <SInputFrom 
+        type="text" 
+        placeholder="TODOを登録" 
+        value={inputTodo} 
+        onChange={onInputChange} 
+        onKeyDown={onKeyDown}
+      />
+      <SButton onClick={onBtnClick} disabled={!inputTodo}>追加</SButton>
+    </SInputWrap>
+  )
+})
+
+
+const SInputWrap = styled.div`
   display: flex;
 `
 
-const InputFrom = styled.input`
+const SInputFrom = styled.input`
   padding: 20px;
   margin: 8px;
   display: block;
@@ -22,7 +41,7 @@ const InputFrom = styled.input`
   }
 `
 
-const Button = styled.button`
+const SButton = styled.button`
   border: none;
   padding: 8px 20px;
   cursor: pointer;
@@ -38,18 +57,3 @@ const Button = styled.button`
     color: white;
   }
 ` 
-
-export const InputArea = memo(({ inputTodo, onChange, onClick, onEnter }) => {
-  return (
-    <InputWrap>
-      <InputFrom 
-        type="text" 
-        placeholder="TODOを登録" 
-        value={inputTodo} 
-        onChange={onChange} 
-        onKeyDown={onEnter}
-      />
-      <Button onClick={onClick} disabled={!inputTodo}>追加</Button>
-    </InputWrap>
-  )
-})
